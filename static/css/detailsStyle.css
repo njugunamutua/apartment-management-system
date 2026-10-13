@@ -1,0 +1,136 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+* {
+	padding: 0;
+	margin: 0;
+	outline: none;
+	border: none;
+	text-decoration: none;
+	box-sizing: border-box;
+	font-family: "Poppins", "Segoe UI", Arial, sans-serif;
+}
+
+:root {
+	--orange: #FF6B35;
+	--orange-dark: #D9480F;
+	--orange-soft: #FFF1EA;
+	--ink: #1E1E24;
+	--muted: #6b6b76;
+	--bg: #FDFBF7;
+}
+
+body {
+	background: var(--bg);
+	min-height: 100vh;
+}
+
+.error {
+	background: #fdeaea;
+	color: #b23b3b;
+	font-weight: 600;
+	padding: 12px 24px;
+	text-align: center;
+	border-left: 5px solid #b23b3b;
+	max-width: 420px;
+	margin: 16px auto 0;
+	border-radius: 8px;
+}
+
+/* ---------- top bar ---------- */
+.navbar {
+	background: #fff;
+	border-bottom: 3px solid var(--orange);
+	padding: 18px 30px;
+}
+
+.navbar .lead {
+	color: var(--ink);
+	font-weight: 700;
+	font-size: 15px;
+	letter-spacing: 0.5px;
+}
+
+.navbar .lead i {
+	color: var(--orange);
+	margin-right: 8px;
+}
+
+/* ---------- card ---------- */
+.box {
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
+}
+
+.formbox {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 40px 20px;
+}
+
+.formbox form {
+	width: 100%;
+	max-width: 440px;
+	background: #fff;
+	border-radius: 20px;
+	padding: 34px 32px;
+	box-shadow: 0 10px 30px rgba(30, 30, 36, 0.10);
+}
+
+.formbox h1 {
+	display: block;
+	position: static;
+	font-size: 22px;
+	color: var(--ink);
+	text-align: center;
+	margin: 0 0 22px;
+	max-width: 440px;
+	width: 100%;
+}
+
+.formbox p {
+	font-size: 13px;
+	font-weight: 600;
+	color: var(--muted);
+	margin: 16px 0 6px;
+}
+
+.formbox form p:first-of-type {
+	margin-top: 0;
+}
+
+.formbox input[type="text"],
+.formbox input[type="email"],
+.formbox input[type="number"],
+.formbox input[type="password"] {
+	width: 100%;
+	padding: 12px 14px;
+	font-size: 15px;
+	color: var(--ink);
+	border: 2px solid #eee;
+	border-radius: 10px;
+}
+
+.formbox input:focus {
+	border-color: var(--orange);
+}
+
+.formbox input[type="submit"] {
+	width: 100%;
+	margin-top: 26px;
+	padding: 13px 0;
+	background: var(--orange);
+	color: #fff;
+	font-size: 15px;
+	font-weight: 700;
+	border-radius: 10px;
+	cursor: pointer;
+	box-shadow: 0 6px 16px rgba(255, 107, 53, 0.35);
+}
+
+.formbox input[type="submit"]:hover {
+	background: var(--orange-dark);
+}

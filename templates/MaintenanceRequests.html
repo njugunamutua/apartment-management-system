@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block title %}Maintenance Requests{% endblock %}
+{% block script %}
+	<script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
+	<link rel="stylesheet" type="text/css" href="{{url_for('static',filename='css/MaintenanceStyle.css')}}">
+{% endblock %}
+{% block content %}
+	<section id="admin-maint">
+		<header class="admin-maint-head">
+			<h1><i class="fa-solid fa-screwdriver-wrench"></i> Maintenance Requests</h1>
+			<div class="tiles">
+				<div class="tile"><span class="tile-num">{{ open_count }}</span><span class="tile-label">Open</span></div>
+				<div class="tile"><span class="tile-num">{{ progress_count }}</span><span class="tile-label">In Progress</span></div>
+				<div class="tile"><span class="tile-num">{{ resolved_count }}</span><span class="tile-label">Resolved</span></div>
+			</div>
+		</header>
+
+		{% if not requests %}
+			<p class="empty">No maintenance requests have been reported yet.</p>
+		{% endif %}
+
+		<div class="admin-request-list">
+			{% for r in requests %}
+			<div class="admin-request-card">
+				<div class="request-top">
+					<div>
+						<h3>{{ r['ISSUE_TITLE'] }}</h3>
+						<p class="meta">Room {{ r['ROOM_NO'] }} &middot; {{ r['FNAME'] }} {{ r['LNAME'] }} &middot; Reported {{ r['DATE_REPORTED'] }}</p>
+					</div>
+					<span class="status-badge status-{{ r['STATUS'] | lower | replace(' ', '-') }}">{{ r['STATUS'] }}</span>
+				</div>
+				<p class="desc">{{ r['DESCRIPTION'] }}</p>
+				<form method="post" action="{{ url_for('UpdateMaintenanceStatus') }}" class="status-form">
+					<input type="hidden" name="request_id" value="{{ r['REQUEST_ID'] }}">
+					<select name="new_status">
+						<option value="Open" {% if r['STATUS'] == 'Open' %}selected{% endif %}>Open</option>
+						<option value="In Progress" {% if r['STATUS'] == 'In Progress' %}selected{% endif %}>In Progress</option>
+						<option value="Resolved" {% if r['STATUS'] == 'Resolved' %}selected{% endif %}>Resolved</option>
+					</select>
+					<button type="submit">Update</button>
+				</form>
+			</div>
+			{% endfor %}
+		</div>
+	</section>
+{% endblock %}

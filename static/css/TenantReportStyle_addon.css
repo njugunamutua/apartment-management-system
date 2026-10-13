@@ -1,0 +1,67 @@
+
+/* ---------- Rent Status summary tiles ---------- */
+.tiles {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 14px;
+	margin-bottom: 22px;
+}
+
+.tile {
+	background: #fff;
+	border-radius: 14px;
+	padding: 16px 22px;
+	box-shadow: 0 6px 16px rgba(30, 30, 36, 0.08);
+	border-left: 4px solid var(--orange);
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	min-width: 160px;
+}
+
+.tile-num {
+	font-size: 20px;
+	font-weight: 700;
+	color: var(--ink);
+}
+
+.tile-label {
+	font-size: 12px;
+	font-weight: 600;
+	color: var(--muted);
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+}
+
+.notice {
+	background: var(--orange-soft);
+	color: var(--orange-dark);
+	font-weight: 600;
+	padding: 12px 18px;
+	border-radius: 10px;
+	margin-bottom: 18px;
+}
+
+/* ---------- Paid / Unpaid split lists ---------- */
+.list-heading {
+	font-size: 18px;
+	font-weight: 700;
+	margin: 26px 0 14px;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.unpaid-heading {
+	color: var(--red);
+}
+
+.paid-heading {
+	color: var(--green, #1a7a3c);
+}
+
+.all-clear {
+	color: var(--muted);
+	font-size: 14px;
+	margin-bottom: 20px;
+}

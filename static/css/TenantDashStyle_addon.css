@@ -1,0 +1,52 @@
+
+/* ---------- icon-style cards (Report an Issue / My Requests) ---------- */
+.col3, .col4 {
+	display: inline-block;
+	vertical-align: top;
+	width: 320px;
+	max-width: 44vw;
+	margin: 0 18px 24px;
+	background: #fff;
+	border-radius: 20px;
+	overflow: hidden;
+	box-shadow: 0 10px 30px rgba(30, 30, 36, 0.10);
+	text-align: left;
+}
+
+.col3 .icon-area, .col4 .icon-area {
+	height: 200px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: var(--orange-soft);
+}
+
+.col3 .icon-area i, .col4 .icon-area i {
+	font-size: 56px;
+	color: var(--orange);
+}
+
+.btn3, .btn4 {
+	display: block;
+	width: 100%;
+	padding: 16px 0;
+	background: var(--orange);
+	border: none;
+	cursor: pointer;
+}
+
+.btn3:hover, .btn4:hover {
+	background: var(--orange-dark);
+}
+
+.btn3 a, .btn4 a {
+	display: block;
+	color: #fff;
+	font-size: 16px;
+	font-weight: 700;
+	text-align: center;
+}
+
+@media (max-width: 720px) {
+	.col3, .col4 { width: 90%; max-width: 90%; margin: 0 auto 24px; display: block; }
+}

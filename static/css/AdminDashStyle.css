@@ -1,0 +1,130 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+*{
+	padding: 0;
+	margin: 0;
+	outline: none;
+	border: none;
+	text-decoration: none;
+	box-sizing: border-box;
+	font-family: "Poppins",cursive;
+}
+
+body {
+	background: #FDFBF7;
+}
+
+#dashboard {
+	padding-left: 125px;
+	width: 100%;
+	height: 100vh;
+	background: #FDFBF7;
+	padding-top: 23px;
+}
+
+.cards {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	grid-gap: 30px;
+}
+
+.card-single {
+	display: flex;
+	height: 145px;
+	width: 275px;
+	border-radius: 18px;
+	box-shadow: 0 8px 22px rgba(30, 30, 36, 0.10);
+	border-left: 7px solid #FF6B35;
+	color: #6b6b76;
+	background: #fff;
+	transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card-single:hover {
+	transform: translateY(-4px);
+	box-shadow: 0 14px 30px rgba(30, 30, 36, 0.16);
+}
+
+.card-single h1 {
+	color: #1E1E24;
+}
+
+.card-single i, .card-single svg {
+	color: #FF6B35;
+}
+
+.card-single .fa-city, .card-single .fa-users, .card-single .fa-building, 
+.card-single .fa-coins {
+	font-size: 32px;
+	padding-top: 22px;
+}
+
+.card-single h1, .card-single span {
+	padding: 25px 0 25px 28px;
+}
+
+.card-single span {
+	padding-left: 25px;
+}
+.card-single h1 {
+	font-size: 26px;
+}
+
+.card-single #fa1 {
+	padding-left: 3px ;
+}
+
+.card-single #fa2 {
+	padding-left:30px ;
+}
+
+.card-single #fa3 {
+	padding-left:55px ;
+}
+
+.card-single #fa4, .card-single #fa8 {
+	padding-left:26px ;
+} 
+
+.card-single #fa5 {
+	padding-left:15px ;
+}
+
+.card-single #fa6, .card-single #fa7 {
+	padding-left:75px ;
+}
+
+.card-single #fa9 {
+	padding-left:10px ;
+}  
+
+.msg {
+	font-size: 22px;
+	color: #fff;
+	background-color: #1E1E24;
+	border: 1px solid #FF6B35;
+	width: 400px;
+	height: 150px;
+	text-align: center;
+	padding-top: 59px;
+	position: fixed;
+	top: calc(50% - 75px);
+	left: calc(50% - 200px);
+	z-index: 9;
+    -webkit-animation: cssAnimation 5s forwards; 
+    animation: cssAnimation 5s forwards;
+}
+
+@keyframes cssAnimation {
+    0%   {opacity: 1;}
+	80%   {opacity: 0.8;}
+	90%  {opacity: 0.3;}
+    100% {opacity: 0;}
+}
+
+@-webkit-keyframes cssAnimation {
+    0%   {opacity: 1;}
+	80%   {opacity: 0.8;}
+	90%  {opacity: 0.3;}
+    100% {opacity: 0;}
+}

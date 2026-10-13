@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8"> 
+		<title>Rent Payment</title>
+        <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+		<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="{{url_for('static',filename='js/payment.js')}}"></script>
+		<link rel="stylesheet" type="text/css" href="{{url_for('static',filename='css/PaymentStyle.css')}}">
+	</head>
+	<body>
+		<!--<div id="myModal" class="modal fade">
+    		<div class="modal-dialog">
+        		<div class="modal-content">
+            		<div class="modal-header">
+                		<h5 class="modal-title">We Only Accept Card Payments</h5>
+                		<button type="button" data-dismiss="modal"><i class="fa-solid fa-xmark"></i></button>
+            		</div>
+            		<div class="modal-body">
+						<p><img src="{{url_for('static',filename='images/cards.jpg')}}" alt="Image"></p>
+            		</div>
+        		</div>
+    		</div>
+		</div> -->
+		{% with messages = get_flashed_messages() %}
+  			{% if messages %}
+   		 		{% for message in messages %}
+					<p class="msg">{{message}}</p>
+    			{% endfor %}
+  			{% endif %}
+		{% endwith %}
+		{% if err %}  
+        	<p class="error"><strong>Error</strong>: {{ err }}</p>  
+    	{% endif %} 
+		<div class="payment">
+			<header>
+				<p><a href="#" onclick="history.back()"><i class="fa-solid fa-arrow-left"></i></a><i class="fa-solid fa-credit-card"></i>PAYMENT</p>
+			</header>
+			<div class="payment-box">
+
+				<div class="method-tabs">
+					<button type="button" class="tab-btn active" id="tabMpesa" onclick="selectMethod('mpesa')"><i class="fa-solid fa-mobile-screen-button"></i> M-Pesa</button>
+					<button type="button" class="tab-btn" id="tabCard" onclick="selectMethod('card')"><i class="fa-solid fa-credit-card"></i> Card</button>
+				</div>
+
+				<form id="payForm" action="{{ url_for('Payment',aptNo=aptNo ,Tname=Tname, PhNo=PhNo, Uname=Uname, rentAmt=rentAmt, late_fee=late_fee, totAmt=totAmt) }}" method="post" onsubmit="return onPayFormSubmit(event)">
+					<input type="hidden" name="payMethod" id="payMethod" value="mpesa">
+
+					<!-- M-PESA PANEL -->
+					<table class="user-details" id="mpesaPanel">
+						<tr>
+							<th><h5>Personal Details</h5></th>
+							<th><h5>M-Pesa Details</h5></th>
+						</tr>
+						<tr>
+							<td class="name"><p><label>Full Name :</label><input class="if1" type="text" value='{{ Tname }}' readonly/></p></td>
+							<td class="name"><p><label>Paybill No. :</label><input class="if1" type="text" value="400200" readonly/></p></td>
+						</tr>
+						<tr>
+							<td><p><label>Email :</label><input class="if2" type="email" name="email" value='{{ Uname }}' readonly/></p></td>
+							<td><p><label>Account No. :</label><input class="if2" type="text" value='{{ aptNo }}' readonly/></p></td>
+						</tr>
+						<tr>
+							<td><p><label>Apartment No. :</label><input class="if3" type="text" name="roomNo" value='{{ aptNo }}' maxlength="3" readonly/></p></td>
+							<td><p><label>M-Pesa Phone No. :</label><input class="if3" type="tel" name="mpesaPhone" placeholder=" e.g. 0712345678" value='{{ PhNo }}' maxlength="12"/></p></td>
+						</tr>
+						<tr>
+							<td><p><label>Rent Amount (KSh) :</label><input class="if5" type="number" name="amount" value='{{ rentAmt }}' readonly/></p></td>
+							<td><p><label>Late fee (KSh) :</label><input class="if6" type="number" name="latefee" value='{{ late_fee }}' readonly/></p></td>
+						</tr>
+						<tr class="tr7">
+							<td><p><label>Total Amount (KSh) :</label><input class="if7" type="number" name="total" value='{{ totAmt }}' readonly/></p></td>
+							<td></td>
+						</tr>
+					</table>
+
+					<!-- CARD PANEL -->
+					<table class="user-details" id="cardPanel" style="display:none;">
+						<tr>
+							<th><h5>Personal Details</h5></th>
+							<th><h5>Card Details</h5></th>
+						</tr>
+						<tr>
+							<td class="name">
+								<p><label>Full Name :</label><input class="if1" type="text" name="name1" value='{{ Tname }}'  readonly/></p>
+							</td>
+							<td class="name">
+								<p><label>Card Holder Name :</label><input id="txtName" class="if1" type="text" placeholder=" Enter cardholder name" name="name2"/></p>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<p><label>Email :</label><input class="if2" type="email" value='{{ Uname }}' readonly/></p>
+							</td>
+							<td>
+								<p><label>Card Number :</label><input class="if2" type="number" placeholder=" Enter card number" name="cardNo"/></p>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<p><label>Phone No. :</label><input class="if3" type="text" maxlength="10" value='{{ PhNo }}' readonly/></p>
+							</td>
+							<td>
+								<p><label>Expiry Date :</label><input type="month" min="2000-01" value="2030-12"/><label class="l8">CVV :</label><input class="if8" type="number" placeholder=" xxx" name="cvv"/></p>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<p><label>Apartment No. :</label><input class="if4" type="text" value='{{ aptNo }}' maxlength="3" readonly/></p>
+							</td>
+							<td>
+								<p><label>Pay to :</label><input class="if1" type="text" value=" Joey Rudolph Flynn" readonly/></p>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<p><label>Rent Amount (KSh) :</label><input class="if5" type="number" value='{{ rentAmt }}' readonly/></p>
+							</td>
+							<td>
+								<p><label>Account No. :</label><input class="if3" type="text" name="acc-no" value="xxxxxx34981"  maxlength="11" readonly/></p>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<p><label>Late fee (KSh) :</label><input class="if6" type="number" value='{{ late_fee }}' readonly/></p>
+							</td>
+							<td>
+								<p><label>IFSC code :</label><input class="if3" type="text" value=" SBIN0005943" maxlength="11" readonly/></p>
+							</td>
+						</tr>
+						<tr class="tr7">
+							<td>
+								<p><label>Total Amount (KSh) :</label><input class="if7" type="number" value='{{ totAmt }}' readonly/></p>
+							</td>
+							<td>
+								<p><label>Bank Name :</label><input class="if3" type="text" value=" State Bank of India"></p>
+							</td>
+						</tr>
+					</table>
+
+					<input type="submit" value="Send STK Push" class="pay-btn" id="payBtn" />
+					<input type="reset" value='Cancel' class="cancel-btn" onclick="selectMethod(currentMethod)"/>
+				</form>
+			</div>
+		</div>
+
+		<!-- M-PESA "waiting for PIN" overlay -->
+		<div class="stk-overlay" id="stkOverlay">
+			<div class="stk-box">
+				<i class="fa-solid fa-mobile-screen-button stk-icon"></i>
+				<h3>Check your phone</h3>
+				<p id="stkText">An M-Pesa prompt was sent to <strong id="stkPhone"></strong>.<br>Enter your M-Pesa PIN to pay <strong id="stkAmt"></strong>.</p>
+				<div class="stk-spinner"></div>
+				<p class="stk-note">Waiting for confirmation&hellip;</p>
+			</div>
+		</div>
+		<script>
+			var currentMethod = "mpesa";
+			var stkSubmitting = false;
+
+			function selectMethod(method) {
+				currentMethod = method;
+				document.getElementById("payMethod").value = method;
+				var isMpesa = method === "mpesa";
+				document.getElementById("mpesaPanel").style.display = isMpesa ? "" : "none";
+				document.getElementById("cardPanel").style.display = isMpesa ? "none" : "";
+				document.getElementById("tabMpesa").classList.toggle("active", isMpesa);
+				document.getElementById("tabCard").classList.toggle("active", !isMpesa);
+				document.getElementById("payBtn").value = isMpesa ? "Send STK Push" : "Pay";
+			}
+
+			function onPayFormSubmit(event) {
+				if (currentMethod !== "mpesa" || stkSubmitting) {
+					return true; // card payment, or we already finished the STK wait - submit for real
+				}
+				event.preventDefault();
+				var phone = document.querySelector("input[name='mpesaPhone']").value.trim();
+				if (phone.length < 9) {
+					alert("Enter a valid M-Pesa phone number first.");
+					return false;
+				}
+				document.getElementById("stkPhone").textContent = phone;
+				document.getElementById("stkAmt").textContent = "KSh {{ totAmt }}";
+				document.getElementById("stkOverlay").style.display = "flex";
+				setTimeout(function () {
+					stkSubmitting = true;
+					document.getElementById("payForm").submit();
+				}, 3200);
+				return false;
+			}
+
+			// start on the M-Pesa tab by default
+			selectMethod("mpesa");
+		</script>
+	</body>
+</html>

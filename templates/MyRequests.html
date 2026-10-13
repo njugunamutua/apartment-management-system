@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>My Maintenance Requests</title>
+		<script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
+		<link rel="stylesheet" type="text/css" href="{{url_for('static',filename='css/MaintenanceStyle.css')}}">
+	</head>
+	<body>
+		<nav class="navbar">
+			<a href="/TenantDashboard" class="lead"><i class="fa-solid fa-arrow-left"></i> BACK</a>
+		</nav>
+
+		<div class="listpage">
+			<h1><i class="fa-solid fa-clipboard-list"></i> My Maintenance Requests</h1>
+
+			{% if not requests %}
+				<p class="empty">You haven't reported any issues yet. <a href="/ReportIssue">Report one here</a>.</p>
+			{% endif %}
+
+			<div class="request-list">
+				{% for r in requests %}
+				<div class="request-card">
+					<div class="request-top">
+						<h3>{{ r['ISSUE_TITLE'] }}</h3>
+						<span class="status-badge status-{{ r['STATUS'] | lower | replace(' ', '-') }}">{{ r['STATUS'] }}</span>
+					</div>
+					<p class="desc">{{ r['DESCRIPTION'] }}</p>
+					<p class="meta">Reported on {{ r['DATE_REPORTED'] }}{% if r['DATE_RESOLVED'] %} &middot; Resolved on {{ r['DATE_RESOLVED'] }}{% endif %}</p>
+				</div>
+				{% endfor %}
+			</div>
+
+			<a class="new-btn" href="/ReportIssue"><i class="fa-solid fa-plus"></i> Report another issue</a>
+		</div>
+	</body>
+</html>

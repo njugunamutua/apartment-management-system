@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block title %}Block Breakdown{% endblock %}
+{% block script %}
+	<link rel="stylesheet" type="text/css" href="{{url_for('static',filename='css/BlockBreakdownStyle.css')}}">
+{% endblock %}
+{% block content %}
+	<section id="breakdown-page">
+		<h1>Property Overview</h1>
+
+		<h2>Blocks</h2>
+		<div class="breakdown-table-wrap">
+			<table class="breakdown-table">
+				<tr>
+					<th>Block</th>
+					<th>Total Units</th>
+					<th>Occupied</th>
+					<th>Vacant</th>
+				</tr>
+				{% for row in block_breakdown %}
+				<tr>
+					<td>{{ row['BLOCK_NAME'] }}</td>
+					<td>{{ row['TOTAL_UNITS'] }}</td>
+					<td class="occupied-tag">{{ row['OCCUPIED'] or 0 }}</td>
+					<td class="vacant-tag">{{ row['VACANT'] or 0 }}</td>
+				</tr>
+				{% else %}
+				<tr><td class="no-data" colspan="4">No blocks found.</td></tr>
+				{% endfor %}
+			</table>
+		</div>
+
+		<h2>Unit Types by Block</h2>
+		<div class="breakdown-table-wrap">
+			<table class="breakdown-table">
+				<tr>
+					<th>Block</th>
+					<th>Type</th>
+					<th>Total Units</th>
+					<th>Occupied</th>
+					<th>Vacant</th>
+				</tr>
+				{% for row in bedroom_type_breakdown %}
+				<tr>
+					<td>{{ row['BLOCK_NO'] }}</td>
+					<td>{{ row['BEDROOM_TYPE'] }}</td>
+					<td>{{ row['TOTAL_UNITS'] }}</td>
+					<td class="occupied-tag">{{ row['OCCUPIED'] or 0 }}</td>
+					<td class="vacant-tag">{{ row['VACANT'] or 0 }}</td>
+				</tr>
+				{% else %}
+				<tr><td class="no-data" colspan="5">No units added yet. Add a unit's floor and bedroom type on the Apartment Rooms page to see it here.</td></tr>
+				{% endfor %}
+			</table>
+		</div>
+	</section>
+{% endblock %}

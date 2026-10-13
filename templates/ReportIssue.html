@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Report an Issue</title>
+		<script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
+		<link rel="stylesheet" type="text/css" href="{{url_for('static',filename='css/MaintenanceStyle.css')}}">
+	</head>
+	<body>
+		<nav class="navbar">
+			<a href="/TenantDashboard" class="lead"><i class="fa-solid fa-arrow-left"></i> BACK</a>
+		</nav>
+
+		{% if msg %}
+			<p class="success-msg">{{ msg }}</p>
+		{% endif %}
+		{% if err %}
+			<p class="error">{{ err }}</p>
+		{% endif %}
+
+		<div class="formbox">
+			<form method="post" action="{{ url_for('ReportIssue') }}">
+				<h1><i class="fa-solid fa-screwdriver-wrench"></i> Report a Maintenance Issue</h1>
+				<p>What's the problem?</p>
+				<input type="text" name="title" placeholder="e.g. Leaking kitchen tap" required maxlength="100"/>
+				<p>Tell us more</p>
+				<textarea name="description" rows="5" placeholder="Where exactly, and anything else that helps us fix it faster..." required></textarea>
+				<input type="submit" value="Submit Report"/>
+			</form>
+		</div>
+	</body>
+</html>

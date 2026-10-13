@@ -1,0 +1,131 @@
+*{
+	padding: 0;
+	margin: 0;
+	outline: none;
+	border: none;
+	text-decoration: none;
+	box-sizing: border-box;
+	font-family: "Poppins", "Segoe UI", Arial, sans-serif;
+}
+
+:root {
+	--orange: #FF6B35;
+	--orange-dark: #D9480F;
+	--orange-soft: #FFF1EA;
+	--ink: #1E1E24;
+	--muted: #6b6b76;
+	--bg: #FDFBF7;
+}
+
+body {
+	background: var(--bg);
+	color: var(--ink);
+}
+
+/* ---------- title bar ---------- */
+.nav-bar {
+	list-style: none;
+	display: flex;
+	align-items: center;
+	gap: 22px;
+	padding: 20px 30px 20px 100px;
+	background: var(--ink);
+	border-bottom: 4px solid var(--orange);
+	color: #fff;
+}
+
+.nav-bar .previous, .nav-bar .next {
+	color: var(--orange);
+	font-size: 22px;
+}
+
+.nav-bar .users p {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	font-size: 22px;
+	font-weight: 700;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+	margin-right: auto;
+}
+
+.nav-bar .users i {
+	color: var(--orange);
+}
+
+.nav-bar .search {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	background: #2c2c34;
+	border-radius: 999px;
+	padding: 8px 16px;
+}
+
+.nav-bar .search i {
+	color: var(--orange);
+}
+
+.nav-bar .search input {
+	background: transparent;
+	color: #fff;
+	font-size: 15px;
+	width: 220px;
+}
+
+.nav-bar .search input::placeholder {
+	color: #9a9aa6;
+}
+
+/* ---------- table ---------- */
+section {
+	padding: 30px 40px 60px 100px;
+	max-width: 1240px;
+}
+
+table {
+	width: 100%;
+	border-collapse: collapse;
+	background: #fff;
+	border-radius: 16px;
+	overflow: hidden;
+	box-shadow: 0 8px 24px rgba(30, 30, 36, 0.08);
+}
+
+table tr:first-child {
+	background: var(--ink);
+}
+
+table th {
+	text-align: left;
+	padding: 16px 18px;
+	font-size: 14px;
+	color: var(--orange);
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+}
+
+table td {
+	padding: 14px 18px;
+	font-size: 15px;
+	color: var(--ink);
+	border-bottom: 1px solid #f2f0ec;
+}
+
+table tr:last-child td {
+	border-bottom: none;
+}
+
+table tr.live-search-list:nth-child(even) td {
+	background: #faf9f7;
+}
+
+table tr.live-search-list:hover td {
+	background: var(--orange-soft);
+}
+
+@media (max-width: 800px) {
+	.nav-bar { flex-wrap: wrap; padding-left: 80px; }
+	section { padding: 20px 16px 50px 80px; }
+}

@@ -1,0 +1,206 @@
+{% extends 'base.html' %}
+{% block title %}Apartment Rooms{% endblock%}
+{% block script %}
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.8.2.js"></script>
+	<script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
+	<link rel="stylesheet" type="text/css" href="{{url_for('static',filename='css/ApartmentRoomsStyle.css')}}">
+{% endblock %}
+{% block content %}
+	<header>
+		<nav class="navbar">
+			<ul class="nav-bar">
+				<li class="arrow"><a href="/tenantReport" class="previous"><i class="fa-solid fa-arrow-left"></i></a></li>
+				<li class="rooms"><i class="fa-solid fa-building"></i> Apartment Rooms</li>
+				<li class="search"><i class="fa-solid fa-magnifying-glass"></i><input type="number" placeholder="Search apartment no...." class="live-search-box"></li>
+				<li class="arrow"><a href="/RentStatus" class="next"><i class="fa-solid fa-arrow-right"></i></a></li>
+			</ul>
+		</nav>
+	</header>
+
+	<section>
+		<ul class="crud">
+			<li><button class="operations" type="button" onclick="openAddForm()">ADD <i class="fa-solid fa-plus"></i></button></li>
+			<li><button class="operations" type="button" onclick="openUpdateForm()">UPDATE <i class="fa-solid fa-pen-to-square"></i></button></li>
+			<li><button class="operations danger" type="button" onclick="openDeleteForm()">DELETE <i class="fa-solid fa-trash"></i></button></li>
+		</ul>
+
+		{% if msg2 %}<p class="notice">{{ msg2 }}</p>{% endif %}
+
+		<!-- ADD APARTMENT -->
+		<div class="add-form-popup" id="addForm">
+			<form class="add-form-container" action="{{ url_for('ApartmentRooms') }}" method="post" enctype="multipart/form-data">
+				<h2 class="heading">Add Apartment</h2>
+				<div class="divider-custom">.</div>
+
+				<div class="form-grid">
+					<div class="field">
+						<label for="room-no">Room No</label>
+						<input id="room-no" type="number" placeholder="Eg: 312" name="room" required/>
+					</div>
+					<div class="field">
+						<label for="status">Status</label>
+						<select id="status" name="status" required>
+							<option value="Unoccupied" selected>Unoccupied (available)</option>
+							<option value="Occupied">Occupied</option>
+						</select>
+					</div>
+					<div class="field">
+						<label for="block-no">Block No</label>
+						<input id="block-no" type="number" min="1" placeholder="Eg: 3" name="block" required/>
+					</div>
+					<div class="field">
+						<label for="floor-no">Floor No</label>
+						<input id="floor-no" type="number" min="0" placeholder="Eg: 2" name="floor" required/>
+					</div>
+					<div class="field">
+						<label for="bedroom-type">Apartment Type</label>
+						<select id="bedroom-type" name="bedroomType" required>
+							<option value="" disabled selected>Choose type</option>
+							<option value="Bedsitter">Bedsitter</option>
+							<option value="1 Bedroom">1 Bedroom</option>
+							<option value="2 Bedroom">2 Bedroom</option>
+							<option value="3 Bedroom">3 Bedroom</option>
+							<option value="4 Bedroom">4 Bedroom</option>
+						</select>
+					</div>
+					<div class="field">
+						<label for="rent_per_month">Rent per month (KSh)</label>
+						<input id="rent_per_month" type="number" min="0" placeholder="Eg: 25000" name="rentPerMonth" required/>
+					</div>
+					<div class="field">
+						<label for="area">Area (sq.ft)</label>
+						<input id="area" type="number" min="0" placeholder="Eg: 1200" name="area" required/>
+					</div>
+					<div class="field">
+						<label for="apartmentTitle">Title</label>
+						<input id="apartmentTitle" type="text" placeholder="Eg: Sunny corner unit" name="apartmentTitle" required/>
+					</div>
+				</div>
+
+				<p class="group-label">Photos</p>
+				<div class="form-grid">
+					<div class="field"><label for="hall">Hall</label><input type="file" accept="image/*" name="hall" id="hall" required/></div>
+					<div class="field"><label for="kitchen">Kitchen</label><input type="file" accept="image/*" name="kitchen" id="kitchen" required/></div>
+					<div class="field"><label for="bedroom">Bedroom</label><input type="file" accept="image/*" name="bedroom" id="bedroom" required/></div>
+					<div class="field"><label for="extra">Extra</label><input type="file" accept="image/*" name="extra" id="extra" required/></div>
+				</div>
+
+				<div class="field full">
+					<label for="desc">Description</label>
+					<textarea id="desc" name="desc" rows="4" placeholder="Describe the apartment" required></textarea>
+				</div>
+
+				<div class="form-buttons">
+					<input type="submit" class="btn" value="Add"/>
+					<button type="button" class="cancel" onclick="closeAddForm()">Close</button>
+				</div>
+			</form>
+		</div>
+
+		<!-- UPDATE APARTMENT -->
+		<div class="form-popup" id="updateForm">
+			<form class="form-container" action="{{ url_for('UpdateApartment') }}" method="post">
+				<h2 class="heading">Update Apartment</h2>
+				<div class="divider-custom">.</div>
+
+				<div class="form-grid">
+					<div class="field">
+						<label for="up_room">Room No</label>
+						<input id="up_room" type="number" placeholder="Room to update" name="room1" required/>
+					</div>
+					<div class="field">
+						<label for="up_status">Status</label>
+						<select id="up_status" name="status1" required>
+							<option value="Unoccupied" selected>Unoccupied (available)</option>
+							<option value="Occupied">Occupied</option>
+						</select>
+					</div>
+					<div class="field">
+						<label for="up_rent">Rent per month (KSh)</label>
+						<input id="up_rent" type="number" min="0" name="rentPerMonth1" required/>
+					</div>
+					<div class="field">
+						<label for="up_area">Area (sq.ft)</label>
+						<input id="up_area" type="number" min="0" name="up_area" required/>
+					</div>
+					<div class="field">
+						<label for="up_floor">Floor No</label>
+						<input id="up_floor" type="number" min="0" placeholder="Leave empty to keep" name="up_floor"/>
+					</div>
+					<div class="field">
+						<label for="up_bedroomType">Apartment Type</label>
+						<select id="up_bedroomType" name="up_bedroomType">
+							<option value="" selected>Leave unchanged</option>
+							<option value="Bedsitter">Bedsitter</option>
+							<option value="1 Bedroom">1 Bedroom</option>
+							<option value="2 Bedroom">2 Bedroom</option>
+							<option value="3 Bedroom">3 Bedroom</option>
+							<option value="4 Bedroom">4 Bedroom</option>
+						</select>
+					</div>
+					<div class="field full">
+						<label for="up_title">Title</label>
+						<input type="text" name="up_title" id="up_title" required/>
+					</div>
+				</div>
+
+				<div class="form-buttons">
+					<input type="submit" class="btn" value="Update"/>
+					<button type="button" class="cancel" onclick="closeUpdateForm()">Close</button>
+				</div>
+			</form>
+		</div>
+
+		<!-- DELETE APARTMENT -->
+		<div class="form-popup" id="deleteForm">
+			<form class="form-container small" action="{{ url_for('DeleteApartment') }}" method="post">
+				<h2 class="heading">Delete Apartment</h2>
+				<div class="divider-custom">.</div>
+				<div class="field full">
+					<label for="del_room">Room No to delete</label>
+					<input id="del_room" type="number" placeholder="Eg: 312" name="room2" required/>
+				</div>
+				<div class="form-buttons">
+					<input type="submit" class="btn danger" value="Delete"/>
+					<button type="button" class="cancel" onclick="closeDeleteForm()">Close</button>
+				</div>
+			</form>
+		</div>
+
+		<!-- LISTING -->
+		{% if not msg3 %}
+			<p class="empty">No vacant apartments yet. Click <b>ADD</b> to create the first one.</p>
+		{% endif %}
+		<table id="box">
+			{% for msg3Row in msg3 %}
+			<tr class="live-search-list">
+				<td class="photo">
+					{% for i in img_url if i['ROOM_NO'] == msg3Row['ROOM_NO'] %}
+						{% set value = i['PATHNAME'] + '/' + (i['PHOTO1'] | securename) %}
+						<img id="hallImage" src="{{ url_for('static', filename=value) }}" alt="Hall" onerror="this.onerror=null;this.src='{{ url_for('static', filename='images/no-photo.svg') }}'"/>
+					{% else %}
+						<img src="{{ url_for('static', filename='images/no-photo.svg') }}" alt="No photo"/>
+					{% endfor %}
+				</td>
+				<td class="details-cell">
+					{% if msg3Row['APT_TITLE'] %}<h3 class="apt-title">{{ msg3Row['APT_TITLE'] }}</h3>{% endif %}
+					{% if msg3Row['RENT_PER_MONTH'] %}<p class="price">KSh {{ '{:,}'.format(msg3Row['RENT_PER_MONTH']) }} <small>/ month</small></p>{% endif %}
+					<ul class="chips">
+						{% if msg3Row['ROOM_NO'] %}<li><i class="fa-solid fa-door-open"></i> Apartment {{ msg3Row['ROOM_NO'] }}</li>{% endif %}
+						{% if msg3Row['BLOCK_NO'] %}<li><i class="fa-solid fa-city"></i> Block {{ msg3Row['BLOCK_NO'] }}</li>{% endif %}
+						{% if msg3Row['FLOOR_NO'] %}<li><i class="fa-solid fa-layer-group"></i> Floor {{ msg3Row['FLOOR_NO'] }}</li>{% endif %}
+						{% if msg3Row['BEDROOM_TYPE'] %}<li><i class="fa-solid fa-bed"></i> {{ msg3Row['BEDROOM_TYPE'] }}</li>{% endif %}
+						{% if msg3Row['AREA'] %}<li><i class="fa-solid fa-ruler-combined"></i> {{ msg3Row['AREA'] }} sq.ft</li>{% endif %}
+					</ul>
+					{% if msg3Row['APARTMENT_DESC'] %}<p class="desc">{{ msg3Row['APARTMENT_DESC'] }}</p>{% endif %}
+				</td>
+			</tr>
+			{% endfor %}
+		</table>
+	</section>
+{% endblock %}
+
+{% block endscript %}
+    <script type="text/javascript" src="{{url_for('static',filename='js/search.js')}}"></script>
+	<script type="text/javascript" src="{{url_for('static',filename='js/Scripts.js')}}"></script>
+{% endblock %}
