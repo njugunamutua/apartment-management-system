@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Apartments</title>
+		<script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
+		<link rel="stylesheet" type="text/css" href="{{url_for('static',filename='css/RentApartmentStyle.css')}}">
+	</head>
+	<body>
+		<header>
+			<nav>
+				<a class="back" href="/TenantDashboard"><i class="fa-solid fa-arrow-left"></i></a>
+				<span class="brand"><i class="fa-solid fa-building"></i> APARTMENTS</span>
+			</nav>
+		</header>
+
+		<main>
+			<form class="filters" method="get" action="/RentApartment">
+				<label for="block">Block
+					<select name="block" id="block">
+						<option value="">All blocks</option>
+						{% for b in blocks %}
+							<option value="{{ b['BLOCK_NO'] }}" {% if block_filter|string == b['BLOCK_NO']|string %}selected{% endif %}>{{ b['BLOCK_NAME'] }}</option>
+						{% endfor %}
+					</select>
+				</label>
+				<label for="bedroomType">Apartment type
+					<select name="bedroomType" id="bedroomType">
+						<option value="">All types</option>
+						{% for t in bedroom_types %}
+							<option value="{{ t['BEDROOM_TYPE'] }}" {% if bedroom_filter == t['BEDROOM_TYPE'] %}selected{% endif %}>{{ t['BEDROOM_TYPE'] }}</option>
+						{% endfor %}
+					</select>
+				</label>
+				<button type="submit"><i class="fa-solid fa-magnifying-glass"></i> Search</button>
+			</form>
+
+			{% if not apartment %}
+				<p class="empty">No available units match that search.</p>
+			{% endif %}
+
+			<div class="listing">
+			{% for aptRow in apartment %}
+				<article class="card">
+					{% for i in img_url if i['ROOM_NO'] == aptRow['ROOM_NO'] %}
+						{% set p = i['PATHNAME'] %}
+						{% set hall = p + '/' + (i['PHOTO1'] | securename) %}
+						{% set kitchen = p + '/' + (i['PHOTO2'] | securename) %}
+						{% set bedroom = p + '/' + (i['PHOTO3'] | securename) %}
+						{% set extra = p + '/' + (i['PHOTO4'] | securename) %}
+						<div class="gallery">
+							<div class="hero">
+								<img class="hero-img" src="{{ url_for('static', filename=hall) }}" alt="Apartment photo" onerror="this.onerror=null;this.src='{{ url_for('static', filename='images/no-photo.svg') }}'">
+								<span class="badge"><i class="fa-solid fa-circle-check"></i> Available</span>
+							</div>
+							<div class="thumbs">
+								<button type="button" class="thumb active" onclick="swapPhoto(this)"><img src="{{ url_for('static', filename=hall) }}" alt="Hall" onerror="this.onerror=null;this.src='{{ url_for('static', filename='images/no-photo.svg') }}'"><em>Hall</em></button>
+								<button type="button" class="thumb" onclick="swapPhoto(this)"><img src="{{ url_for('static', filename=kitchen) }}" alt="Kitchen" onerror="this.onerror=null;this.src='{{ url_for('static', filename='images/no-photo.svg') }}'"><em>Kitchen</em></button>
+								<button type="button" class="thumb" onclick="swapPhoto(this)"><img src="{{ url_for('static', filename=bedroom) }}" alt="Bedroom" onerror="this.onerror=null;this.src='{{ url_for('static', filename='images/no-photo.svg') }}'"><em>Bedroom</em></button>
+								<button type="button" class="thumb" onclick="swapPhoto(this)"><img src="{{ url_for('static', filename=extra) }}" alt="Extra" onerror="this.onerror=null;this.src='{{ url_for('static', filename='images/no-photo.svg') }}'"><em>Extra</em></button>
+							</div>
+						</div>
+					{% endfor %}
+
+					<div class="info">
+						{% if aptRow['APT_TITLE'] %}<h2>{{ aptRow['APT_TITLE'] }}</h2>{% endif %}
+						<p class="price">KSh {{ '{:,}'.format(aptRow['RENT_PER_MONTH']) }} <small>/ month</small></p>
+
+						<ul class="chips">
+							{% if aptRow['ROOM_NO'] %}<li><i class="fa-solid fa-door-open"></i> Unit <span id="apt_id">{{ aptRow['ROOM_NO'] }}</span></li>{% endif %}
+							{% if aptRow['BLOCK_NO'] %}<li><i class="fa-solid fa-city"></i> Block {{ aptRow['BLOCK_NO'] }}</li>{% endif %}
+							{% if aptRow['FLOOR_NO'] %}<li><i class="fa-solid fa-layer-group"></i> Floor {{ aptRow['FLOOR_NO'] }}</li>{% endif %}
+							{% if aptRow['BEDROOM_TYPE'] %}<li><i class="fa-solid fa-bed"></i> {{ aptRow['BEDROOM_TYPE'] }}</li>{% endif %}
+							{% if aptRow['AREA'] %}<li><i class="fa-solid fa-ruler-combined"></i> {{ aptRow['AREA'] }} sq.ft</li>{% endif %}
+						</ul>
+
+						{% if aptRow['APARTMENT_DESC'] %}
+							<p class="desc">{{ aptRow['APARTMENT_DESC'] }}</p>
+						{% endif %}
+
+						<a class="book" href="/Details">BOOK NOW <i class="fa-solid fa-arrow-right"></i></a>
+					</div>
+				</article>
+			{% endfor %}
+			</div>
+		</main>
+
+		<script>
+			// Click a thumbnail to show it in the big photo
+			function swapPhoto(btn) {
+				var card = btn.closest('.card');
+				card.querySelector('.hero-img').src = btn.querySelector('img').src;
+				card.querySelectorAll('.thumb').forEach(function (t) { t.classList.remove('active'); });
+				btn.classList.add('active');
+			}
+		</script>
+	</body>
+</html>

@@ -1,0 +1,156 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+* {
+	padding: 0;
+	margin: 0;
+	outline: none;
+	border: none;
+	text-decoration: none;
+	box-sizing: border-box;
+	font-family: "Poppins", "Segoe UI", Arial, sans-serif;
+}
+
+:root {
+	--orange: #FF6B35;
+	--orange-dark: #D9480F;
+	--orange-soft: #FFF1EA;
+	--ink: #1E1E24;
+	--muted: #6b6b76;
+	--bg: #FDFBF7;
+}
+
+body {
+	background: var(--bg);
+	color: var(--ink);
+}
+
+/* ---------- top bar ---------- */
+header nav {
+	background: var(--ink);
+	border-bottom: 4px solid var(--orange);
+	padding: 20px 30px;
+}
+
+header nav .back {
+	display: inline-flex;
+	align-items: center;
+	gap: 10px;
+	color: #fff;
+	font-size: 18px;
+	font-weight: 700;
+	letter-spacing: 1px;
+}
+
+header nav .back i {
+	color: var(--orange);
+}
+
+.container {
+	max-width: 820px;
+	margin: 0 auto;
+	padding: 34px 20px 60px;
+}
+
+.msg {
+	background: var(--orange-soft);
+	color: var(--orange-dark);
+	font-weight: 600;
+	padding: 12px 20px;
+	border-radius: 10px;
+	margin-bottom: 20px;
+	text-align: center;
+}
+
+.box {
+	background: #fff;
+	border-radius: 20px;
+	padding: 38px 40px;
+	box-shadow: 0 10px 30px rgba(30, 30, 36, 0.08);
+}
+
+.box h4 {
+	text-align: center;
+	font-size: 22px;
+	letter-spacing: 2px;
+	color: var(--ink);
+	margin-bottom: 26px;
+}
+
+.box p {
+	font-size: 15px;
+	line-height: 1.9;
+	color: var(--ink);
+	margin-bottom: 18px;
+}
+
+.owner-info, .tenant-info {
+	background: var(--orange-soft);
+	border-radius: 12px;
+	padding: 14px 18px;
+	margin: 10px 0;
+}
+
+.owner-info p, .tenant-info p {
+	margin-bottom: 4px;
+	font-size: 14px;
+	color: var(--orange-dark);
+}
+
+/* inline read-only fields sitting inside the paragraph text */
+.box input[type="number"],
+.box input[type="date"],
+.box input[type="text"],
+.box input[type="email"] {
+	border-bottom: 2px solid var(--orange);
+	padding: 2px 6px;
+	font-size: 15px;
+	color: var(--ink);
+	font-weight: 600;
+	background: transparent;
+	min-width: 120px;
+}
+
+.box input[readonly] {
+	color: var(--muted);
+}
+
+.box input:focus {
+	border-bottom-color: var(--orange-dark);
+}
+
+.box input[type="checkbox"] {
+	width: 16px;
+	height: 16px;
+	accent-color: var(--orange) !important;
+	vertical-align: middle;
+	margin-right: 8px;
+}
+
+.btn, .reset {
+	padding: 13px 32px;
+	font-size: 15px;
+	font-weight: 700;
+	border-radius: 10px;
+	cursor: pointer;
+	margin-top: 10px;
+}
+
+.btn {
+	background: var(--orange);
+	color: #fff;
+	box-shadow: 0 6px 16px rgba(255, 107, 53, 0.35);
+}
+
+.btn:hover {
+	background: var(--orange-dark);
+}
+
+.reset {
+	background: #f0efec;
+	color: var(--ink);
+	margin-left: 10px;
+}
+
+@media (max-width: 700px) {
+	.box { padding: 26px 22px; }
+}

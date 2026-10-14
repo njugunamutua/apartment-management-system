@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% block title %}Block Breakdown{% endblock %}
+{% block script %}
+	<script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
+	<link rel="stylesheet" type="text/css" href="{{url_for('static',filename='css/BlockBreakdownStyle.css')}}">
+{% endblock %}
+{% block content %}
+	{# add up the totals for the summary tiles #}
+	{% set ns = namespace(units=0, occ=0, vac=0) %}
+	{% for b in block_breakdown %}
+		{% set ns.units = ns.units + (b['TOTAL_UNITS'] or 0) %}
+		{% set ns.occ = ns.occ + (b['OCCUPIED'] or 0) %}
+		{% set ns.vac = ns.vac + (b['VACANT'] or 0) %}
+	{% endfor %}
+
+	<section id="breakdown-page">
+		<div class="page-head">
+			<div>
+				<h1>Property Overview</h1>
+				<p class="sub">Every block, and what is actually inside it.</p>
+			</div>
+			<a class="add-link" href="/ApartmentRooms"><i class="fa-solid fa-plus"></i> Add rooms</a>
+		</div>
+
+		<div class="tiles">
+			<div class="tile"><span class="tile-num">{{ block_breakdown|length }}</span><span class="tile-label">Blocks</span></div>
+			<div class="tile"><span class="tile-num">{{ ns.units }}</span><span class="tile-label">Total units</span></div>
+			<div class="tile"><span class="tile-num occ">{{ ns.occ }}</span><span class="tile-label">Occupied</span></div>
+			<div class="tile"><span class="tile-num vac">{{ ns.vac }}</span><span class="tile-label">Vacant</span></div>
+			<div class="tile"><span class="tile-num">{{ ((ns.occ * 100 / ns.units) | round | int) if ns.units else 0 }}%</span><span class="tile-label">Occupancy</span></div>
+		</div>
+
+		<div class="blocks">
+			{% for b in block_breakdown %}
+				{% set total = b['TOTAL_UNITS'] or 0 %}
+				{% set occ = b['OCCUPIED'] or 0 %}
+				{% set vac = b['VACANT'] or 0 %}
+				<article class="block-card">
+					<header>
+						<h2>{{ b['BLOCK_NAME'] }}</h2>
+						<span class="units">{{ total }} unit{{ '' if total == 1 else 's' }}</span>
+					</header>
+
+					{% if total > 0 %}
+						<div class="bar"><div class="fill" style="width: {{ (occ * 100 / total) | round | int }}%"></div></div>
+						<div class="split">
+							<span class="occupied-tag">{{ occ }} occupied</span>
+							<span class="vacant-tag">{{ vac }} vacant</span>
+						</div>
+
+						<table class="types">
+							<tr><th>Type</th><th>Units</th><th>Occupied</th><th>Vacant</th></tr>
+							{% for t in bedroom_type_breakdown if t['BLOCK_NO'] == b['BLOCK_NO'] %}
+								<tr>
+									<td>{{ t['BEDROOM_TYPE'] }}</td>
+									<td>{{ t['TOTAL_UNITS'] }}</td>
+									<td class="occupied-tag">{{ t['OCCUPIED'] or 0 }}</td>
+									<td class="vacant-tag">{{ t['VACANT'] or 0 }}</td>
+								</tr>
+							{% endfor %}
+						</table>
+					{% else %}
+						<p class="none">No units added to this block yet.</p>
+					{% endif %}
+				</article>
+			{% else %}
+				<p class="none">No blocks found.</p>
+			{% endfor %}
+		</div>
+	</section>
+{% endblock %}

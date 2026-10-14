@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>RoofTop Apartments</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" type="text/css" href="{{url_for('static',filename='css/welcomeStyle.css')}}">
+    </head>
+    <body>
+        <header class="topbar" id="home">
+            <a class="brand" href="#home">
+                <img src="{{url_for('static',filename='images/rooftop1.jpg')}}" alt="RoofTop logo" class="logo">
+                <span>RoofTop <small>Apartments</small></span>
+            </a>
+            <ul id="checklist" class="menu">
+                <li><a href="#home" class="link">Home</a></li>
+                <li><a href="#how" class="link">How it works</a></li>
+                <li><button type="button" class="link" onclick="openAboutForm()">About Us</button></li>
+                <li><button type="button" class="link" onclick="openContactForm()">Contact Us</button></li>
+                <li class="dropdown">
+                    <span class="signin">Sign In <i class="fa fa-user-circle-o"></i></span>
+                    <div class="dropdown-content">
+                        <a href="/AdminLogin">Admin</a>
+                        <a href="/TenantLogin">Tenant</a>
+                    </div>
+                </li>
+            </ul>
+        </header>
+
+        <div class="hero-photo">
+            <img class="backdrop" src="{{url_for('static',filename='images/background.jpg')}}" alt="" aria-hidden="true">
+            <img class="main" src="{{url_for('static',filename='images/background.jpg')}}" alt="RoofTop Apartments building">
+        </div>
+
+        <section class="hero-text">
+            <span class="pill">Quality Lifestyle</span>
+            <h1>Find your next <em>home</em>, not just an apartment</h1>
+            <p class="quote">Browse real units by block, floor and bedroom type, and book online without visiting the office.</p>
+            <div class="cta">
+                <a class="btn-primary" href="/RentApartment">Browse available apartments <i class="fa fa-arrow-right"></i></a>
+                <a class="btn-ghost" href="/TenantLogin">Tenant sign in</a>
+            </div>
+            <div class="hero-stats">
+                <div><strong>9</strong><span>Blocks</span></div>
+                <div><strong>100+</strong><span>Apartments</span></div>
+                <div><strong>24/7</strong><span>Online booking</span></div>
+            </div>
+        </section>
+
+        <section class="how" id="how">
+            <h2>Find your home in three steps</h2>
+            <div class="steps">
+                <div class="step">
+                    <span class="num">1</span>
+                    <h3>Choose a block</h3>
+                    <p>Pick the block you prefer. Every block shows only the units it really has.</p>
+                </div>
+                <div class="step">
+                    <span class="num">2</span>
+                    <h3>Pick your type</h3>
+                    <p>Bedsitter, 1, 2 or 3 bedroom. See the rent and floor before you decide.</p>
+                </div>
+                <div class="step">
+                    <span class="num">3</span>
+                    <h3>Book online</h3>
+                    <p>Reserve your unit and pay your rent without visiting the office.</p>
+                </div>
+            </div>
+        </section>
+
+        <footer class="footer">&copy; RoofTop Apartments &middot; Quality Lifestyle</footer>
+
+        <!-- ABOUT US popup -->
+        <div class="overlay" id="aboutForm">
+            <div class="modal">
+                <h2 class="modal-title">About Us</h2>
+                <div class="bar"></div>
+                <div class="about-us">
+                    <h4>Our Vision</h4>
+                    <p>To develop an Online Apartment Rental Management System that allows users to rent an apartment without physically contacting the rental company.</p>
+                    <h4>Our Mission</h4>
+                    <p>To produce a web-based system that allows customers to register and reserve apartments online, and lets the company manage its rental business effectively. To turn the manual process of renting an apartment into an online, computerised one that eases the customer's task whenever they need a home.</p>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-primary" onclick="closeAboutForm()">Close</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- CONTACT US popup -->
+        <div class="overlay" id="contactForm">
+            <form class="modal">
+                <h2 class="modal-title">Give us your feedback</h2>
+                <div class="bar"></div>
+                <div class="grid">
+                    <label>Full name<input type="text" placeholder="Enter your name..." required/></label>
+                    <label>Phone number<input type="text" placeholder="0712 345 678" required/></label>
+                    <label>Email address<input type="email" placeholder="name@example.com" required/></label>
+                    <label>Apartment No<input type="number" placeholder="e.g. 1101" required/></label>
+                </div>
+                <label class="full">Message<textarea placeholder="Enter your message here..." rows="4" required></textarea></label>
+                <div class="modal-actions">
+                    <button class="btn-primary" type="submit">Send</button>
+                    <button type="button" class="btn-light" onclick="closeContactForm()">Close</button>
+                </div>
+            </form>
+        </div>
+
+        <script type="text/javascript" src="{{url_for('static',filename='js/welcomeScripts.js')}}"></script>
+    </body>
+</html>
