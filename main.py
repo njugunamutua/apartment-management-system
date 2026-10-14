@@ -799,5 +799,8 @@ def Receipt(Tname,pay_id,pay_date,pay_amt) :
     return render_template('Reciept.html', Tname=Tname, pay_id=pay_id, pay_date=pay_date ,pay_amt=pay_amt, payMethod=payMethod, mpesaCode=mpesaCode)
 
 
-if __name__ == '__main__':
-    app.run(port=5000,debug=True)
+
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000)
+    app.run(host="0.0.0.0", port=port, debug=False)
