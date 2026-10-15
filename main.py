@@ -547,18 +547,27 @@ def rentApartment() :
     block_filter = request.args.get('block', '').strip()
     bedroom_filter = request.args.get('bedroomType', '').strip()
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-    query = ('SELECT APT_TITLE, A.ROOM_NO, A.BLOCK_NO, A.FLOOR_NO, A.BEDROOM_TYPE, AREA, RENT_PER_MONTH, APARTMENT_DESC '
-             'FROM APARTMENT AS A, APARTMENT_DETAILS AS AD '
-            'WHERE A.ROOM_NO = AD.ROOM_NO AND A.APT_STATUS = %s', ('Unoccupied',))
-    params = []
+    
+    query = (
+        'SELECT APT_TITLE, A.ROOM_NO, A.BLOCK_NO, A.FLOOR_NO, '
+        'A.BEDROOM_TYPE, AREA, RENT_PER_MONTH, APARTMENT_DESC '
+        'FROM APARTMENT AS A, APARTMENT_DETAILS AS AD '
+        'WHERE A.ROOM_NO = AD.ROOM_NO AND A.APT_STATUS = %s'
+    )
+
+    params = ['Unoccupied']
+
     if block_filter:
-        query += ' AND A.BLOCK_NO = % s'
+        query += ' AND A.BLOCK_NO = %s'
         params.append(block_filter)
+
     if bedroom_filter:
-        query += ' AND A.BEDROOM_TYPE = % s'
+        query += ' AND A.BEDROOM_TYPE = %s'
         params.append(bedroom_filter)
+
     query += ' ORDER BY A.BLOCK_NO, A.FLOOR_NO, A.ROOM_NO'
     cursor.execute(query, tuple(params))
+
     mysql.connection.commit()
     apartment=cursor.fetchall()
     cursor.execute('SELECT * FROM APARTMENT_PHOTOS')
