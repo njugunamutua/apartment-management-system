@@ -200,7 +200,14 @@ def AdminDashboard() :
     mysql.connection.commit()
     result5=cursor.fetchone()
     tot_blck = result5['T_BLOCK']
-    cursor.execute('SELECT SUM(R.RENT_FEE) AS T_RENT FROM RENT AS R, RENT_STATUS AS S WHERE R.RENT_ID = S.RENT_ID AND S.R_STATUS = "Paid"')
+    
+    cursor.execute(
+    'SELECT SUM(R.RENT_FEE) AS T_RENT '
+    'FROM RENT AS R, RENT_STATUS AS S '
+    'WHERE R.RENT_ID = S.RENT_ID AND S.R_STATUS = %s',
+    ('Paid',)
+)
+
     mysql.connection.commit()
     result6=cursor.fetchone()
     tot_rent = result6['T_RENT'] 
