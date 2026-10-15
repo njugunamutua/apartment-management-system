@@ -72,17 +72,22 @@ def AdminLogin() :
                 request.form['adminPass'] != 'secret@123' or \
                 request.form['securityPass'] != 'apartment':
             error = 'Invalid credentials'
-        else:
-            flash('You have logged in successfully!!')
-            return redirect(url_for('AdminDashboard'))
+        
+    else:
+     session['admin_loggedin'] = True
+    flash('You have logged in successfully!')
+    return redirect(url_for('AdminDashboard'))
+
     return render_template('AdminLogin.html', error=error)
 
 
+
 @app.route('/AdminLogout')
-def AdminLogout() :
-    log2 = ''
-    log2 = 'You have logged out successfully!!'
-    return render_template('AdminLogin.html', log2=log2)
+def AdminLogout():
+    session.pop('admin_loggedin', None)
+    flash('You have logged out successfully!')
+    return redirect(url_for('AdminLogin'))
+
 
 
 @app.route('/TenantLogin', methods=['GET', 'POST'])
@@ -481,6 +486,63 @@ def RentStatus():
         paid_list=paid_list,
         totals=totals
     )
+
+@app.route('/UpdatedRentStatus')
+def UpdatedRentStatus():
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+
+    # Find tenants who currently have an apartment
+    cursor.execute('''
+        SELECT T.T_ID, T.ROOM_NO, A.RENT_PER_MONTH
+        FROM TENANT AS T
+        JOIN APARTMENT AS A ON T.ROOM_NO = A.ROOM_NO
+        WHERE T.ROOM_NO IS NOT NULL
+    ''')
+    occupied = cursor.fetchall()
+
+    created = 0
+
+    for tenant in occupied:
+        # Check whether this tenant already has rent for this month
+        cursor.execute('''
+            SELECT RENT_ID
+            FROM RENT
+            WHERE T_ID = %s
+              AND MONTH(DUE_DATE) = MONTH(CURDATE())
+              AND YEAR(DUE_DATE) = YEAR(CURDATE())
+        ''', (tenant['T_ID'],))
+
+        existing = cursor.fetchone()
+
+        if not existing:
+            # Create this month's rent record
+            cursor.execute('''
+                INSERT INTO RENT
+                    (RENT_FEE, T_ID, DUE_DATE, LATE_FEE, PAYMENT_ID)
+                VALUES (%s, %s, %s, %s, %s)
+            ''', (
+                tenant['RENT_PER_MONTH'],
+                tenant['T_ID'],
+                date.today(),
+                0,
+                None
+            ))
+
+            new_rent_id = cursor.lastrowid
+
+            # Mark the new rent as unpaid
+            cursor.execute('''
+                INSERT INTO RENT_STATUS (RENT_ID, R_STATUS)
+                VALUES (%s, %s)
+            ''', (new_rent_id, 'Unpaid'))
+
+            created += 1
+
+    mysql.connection.commit()
+
+    flash(str(created) + ' new rent record(s) generated for this month.')
+    return redirect(url_for('RentStatus'))
+
 
 @app.route('/Backup')
 def Backup() :

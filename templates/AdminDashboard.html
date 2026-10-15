@@ -3,8 +3,18 @@
 {% block script %}
 	<script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
 	<link rel="stylesheet" type="text/css" href="{{url_for('static',filename='css/AdminDashStyle.css')}}">
-{% endblock %}
+
 {% block content %} 
+
+    <div style="display: flex; justify-content: flex-end; margin: 15px 20px;">
+        <a href="{{ url_for('AdminLogout') }}"
+           style="background: #dc3545; color: white; padding: 10px 18px;
+                  border-radius: 6px; text-decoration: none; font-weight: bold;">
+            <i class="fa-solid fa-right-from-bracket"></i> Log Out
+        </a>
+    </div>
+	{% endblock %}
+
 	<section id="dashboard" class="cards">
 		{% with messages2 = get_flashed_messages() %}
   			{% if messages2 %}  
