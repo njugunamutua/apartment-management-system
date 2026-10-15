@@ -424,47 +424,64 @@ def DeleteApartment() :
     img_url = cursor.fetchall()
     return render_template('ApartmentRooms.html', msg2=msg2,msg3=msg3,img_url=img_url)
 
+
 @app.route('/RentStatus')
-def RentStatus() :
+def RentStatus():
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-    cursor.execute('SELECT FNAME, LNAME, T.ROOM_NO, RENT_PER_MONTH, DUE_DATE, R_STATUS, LATE_FEE FROM RENT AS R, APARTMENT AS A, RENT_STATUS AS RS, TENANT AS T WHERE R.RENT_ID = RS.RENT_ID AND T.T_ID = R.T_ID AND A.ROOM_NO = T.ROOM_NO')
-    mysql.connection.commit()
-    rent_status=cursor.fetchall()
+
+    cursor.execute('''
+        SELECT FNAME, LNAME, T.ROOM_NO, RENT_PER_MONTH,
+               DUE_DATE, R_STATUS, LATE_FEE
+        FROM RENT AS R
+        JOIN RENT_STATUS AS RS ON R.RENT_ID = RS.RENT_ID
+        JOIN TENANT AS T ON T.T_ID = R.T_ID
+        JOIN APARTMENT AS A ON A.ROOM_NO = T.ROOM_NO
+    ''')
+    rent_status = cursor.fetchall()
+
     unpaid_list = [row for row in rent_status if row['R_STATUS'] == 'Unpaid']
     paid_list = [row for row in rent_status if row['R_STATUS'] == 'Paid']
-    cursor.execute('''SELECT
-            COALESCE(SUM(CASE WHEN RS.R_STATUS = "Paid" AND MONTH(R.DUE_DATE)=MONTH(CURDATE()) AND YEAR(R.DUE_DATE)=YEAR(CURDATE()) THEN R.RENT_FEE ELSE 0 END),0) AS paid_total,
-            COALESCE(SUM(CASE WHEN RS.R_STATUS = "Unpaid" AND MONTH(R.DUE_DATE)=MONTH(CURDATE()) AND YEAR(R.DUE_DATE)=YEAR(CURDATE()) THEN R.RENT_FEE ELSE 0 END),0) AS unpaid_total,
-            SUM(CASE WHEN RS.R_STATUS = "Paid" AND MONTH(R.DUE_DATE)=MONTH(CURDATE()) AND YEAR(R.DUE_DATE)=YEAR(CURDATE()) THEN 1 ELSE 0 END) AS paid_count,
-            SUM(CASE WHEN RS.R_STATUS = "Unpaid" AND MONTH(R.DUE_DATE)=MONTH(CURDATE()) AND YEAR(R.DUE_DATE)=YEAR(CURDATE()) THEN 1 ELSE 0 END) AS unpaid_count
-        FROM RENT AS R JOIN RENT_STATUS AS RS ON R.RENT_ID = RS.RENT_ID''')
-    mysql.connection.commit()
-    totals = cursor.fetchone()
-    return render_template('RentStatus.html',rent_status=rent_status, unpaid_list=unpaid_list, paid_list=paid_list, totals=totals)
 
-@app.route('/UpdatedRentStatus')
-def UpdatedRentStatus() :
-    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-    cursor.execute('''SELECT T.T_ID, T.ROOM_NO, A.RENT_PER_MONTH FROM TENANT AS T
-                       JOIN APARTMENT AS A ON T.ROOM_NO = A.ROOM_NO
-                       WHERE T.ROOM_NO IS NOT NULL''')
-    mysql.connection.commit()
-    occupied = cursor.fetchall()
-    created = 0
-    for t in occupied:
-        cursor.execute('''SELECT RENT_ID FROM RENT WHERE T_ID = % s
-                           AND MONTH(DUE_DATE) = MONTH(CURDATE()) AND YEAR(DUE_DATE) = YEAR(CURDATE())''', (t['T_ID'],))
-        existing = cursor.fetchone()
-        if not existing:
-            cursor.execute('INSERT INTO RENT (RENT_FEE, T_ID, DUE_DATE, LATE_FEE, PAYMENT_ID) VALUES (% s, % s, % s, % s, % s)',
-                            (t['RENT_PER_MONTH'], t['T_ID'], date.today(), 0, None))
-            mysql.connection.commit()
-            new_rent_id = cursor.lastrowid
-            cursor.execute('INSERT INTO RENT_STATUS VALUES (% s, % s)', (new_rent_id, 'Unpaid'))
-            mysql.connection.commit()
-            created += 1
-    flash(str(created) + " new rent record(s) generated for this month.")
-    return redirect(url_for('RentStatus'))
+    cursor.execute('''
+        SELECT
+            COALESCE(SUM(CASE
+                WHEN RS.R_STATUS = %s
+                AND MONTH(R.DUE_DATE) = MONTH(CURDATE())
+                AND YEAR(R.DUE_DATE) = YEAR(CURDATE())
+                THEN R.RENT_FEE ELSE 0 END), 0) AS paid_total,
+
+            COALESCE(SUM(CASE
+                WHEN RS.R_STATUS = %s
+                AND MONTH(R.DUE_DATE) = MONTH(CURDATE())
+                AND YEAR(R.DUE_DATE) = YEAR(CURDATE())
+                THEN R.RENT_FEE ELSE 0 END), 0) AS unpaid_total,
+
+            COALESCE(SUM(CASE
+                WHEN RS.R_STATUS = %s
+                AND MONTH(R.DUE_DATE) = MONTH(CURDATE())
+                AND YEAR(R.DUE_DATE) = YEAR(CURDATE())
+                THEN 1 ELSE 0 END), 0) AS paid_count,
+
+            COALESCE(SUM(CASE
+                WHEN RS.R_STATUS = %s
+                AND MONTH(R.DUE_DATE) = MONTH(CURDATE())
+                AND YEAR(R.DUE_DATE) = YEAR(CURDATE())
+                THEN 1 ELSE 0 END), 0) AS unpaid_count
+
+        FROM RENT AS R
+        JOIN RENT_STATUS AS RS ON R.RENT_ID = RS.RENT_ID
+    ''', ('Paid', 'Unpaid', 'Paid', 'Unpaid'))
+
+    totals = cursor.fetchone()
+
+    return render_template(
+        'RentStatus.html',
+        rent_status=rent_status,
+        unpaid_list=unpaid_list,
+        paid_list=paid_list,
+        totals=totals
+    )
+
 @app.route('/Backup')
 def Backup() :
     backup_status=''
