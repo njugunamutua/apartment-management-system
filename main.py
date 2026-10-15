@@ -210,8 +210,8 @@ def BlockBreakdown() :
     #per-block breakdown: how many units each block actually has, and their status
     cursor.execute('''SELECT B.BLOCK_NO, B.BLOCK_NAME,
                               COUNT(A.ROOM_NO) AS TOTAL_UNITS,
-                              SUM(CASE WHEN A.APT_STATUS = "Occupied" THEN 1 ELSE 0 END) AS OCCUPIED,
-                              SUM(CASE WHEN A.APT_STATUS = "Unoccupied" THEN 1 ELSE 0 END) AS VACANT
+                              SUM(CASE WHEN A.APT_STATUS = 'Occupied' THEN 1 ELSE 0 END) AS OCCUPIED,
+                              SUM(CASE WHEN A.APT_STATUS = 'Unoccupied' THEN 1 ELSE 0 END) AS VACANT
                        FROM APARTMENT_BLOCK AS B
                        LEFT JOIN APARTMENT AS A ON A.BLOCK_NO = B.BLOCK_NO
                        GROUP BY B.BLOCK_NO, B.BLOCK_NAME
@@ -221,8 +221,8 @@ def BlockBreakdown() :
     #per-block, per-bedroom-type breakdown, e.g. Block 1 -> 1 Bedroom: 10 units, 8 occupied, 2 vacant
     cursor.execute('''SELECT BLOCK_NO, BEDROOM_TYPE,
                               COUNT(*) AS TOTAL_UNITS,
-                              SUM(CASE WHEN APT_STATUS = "Occupied" THEN 1 ELSE 0 END) AS OCCUPIED,
-                              SUM(CASE WHEN APT_STATUS = "Unoccupied" THEN 1 ELSE 0 END) AS VACANT
+                              SUM(CASE WHEN APT_STATUS = 'Occupied' THEN 1 ELSE 0 END) AS OCCUPIED,
+                              SUM(CASE WHEN APT_STATUS = 'Unoccupied' THEN 1 ELSE 0 END) AS VACANT
                        FROM APARTMENT
                        WHERE BEDROOM_TYPE IS NOT NULL
                        GROUP BY BLOCK_NO, BEDROOM_TYPE
