@@ -522,31 +522,59 @@ def MyRequests():
 @app.route('/MaintenanceRequests')
 def MaintenanceRequests():
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-    cursor.execute('''SELECT M.*, T.FNAME, T.LNAME FROM MAINTENANCE_REQUEST AS M
-                       LEFT JOIN TENANT AS T ON M.T_ID = T.T_ID
-                       ORDER BY FIELD(M.STATUS, "Open","In Progress","Resolved"), M.DATE_REPORTED DESC''')
+
+    cursor.execute('''SELECT M.*, T.FNAME, T.LNAME
+                      FROM maintenance_request AS M
+                      LEFT JOIN TENANT AS T ON M.T_ID = T.T_ID
+                      ORDER BY FIELD(M.STATUS, 'Open', 'In Progress', 'Resolved'),
+                      M.DATE_REPORTED DESC''')
     requests = cursor.fetchall()
-    cursor.execute('SELECT COUNT(*) AS c FROM MAINTENANCE_REQUEST WHERE STATUS = "Open"')
+
+    cursor.execute("SELECT COUNT(*) AS c FROM maintenance_request WHERE STATUS = %s", ('Open',))
     open_count = cursor.fetchone()['c']
-    cursor.execute('SELECT COUNT(*) AS c FROM MAINTENANCE_REQUEST WHERE STATUS = "In Progress"')
+
+    cursor.execute("SELECT COUNT(*) AS c FROM maintenance_request WHERE STATUS = %s", ('In Progress',))
     progress_count = cursor.fetchone()['c']
-    cursor.execute('SELECT COUNT(*) AS c FROM MAINTENANCE_REQUEST WHERE STATUS = "Resolved"')
+
+    cursor.execute("SELECT COUNT(*) AS c FROM maintenance_request WHERE STATUS = %s", ('Resolved',))
     resolved_count = cursor.fetchone()['c']
-    return render_template('MaintenanceRequests.html', requests=requests, open_count=open_count, progress_count=progress_count, resolved_count=resolved_count)
+
+    return render_template(
+        'MaintenanceRequests.html',
+        requests=requests,
+        open_count=open_count,
+        progress_count=progress_count,
+        resolved_count=resolved_count
+    )
 
 
 @app.route('/UpdateMaintenanceStatus', methods=['POST'])
 def UpdateMaintenanceStatus():
-    if request.method == 'POST' and 'request_id' in request.form and 'new_status' in request.form:
+    if 'request_id' in request.form and 'new_status' in request.form:
         req_id = request.form['request_id']
         new_status = request.form['new_status']
+
+        # Accept only the three statuses used by the application
+        if new_status not in ('Open', 'In Progress', 'Resolved'):
+            return redirect(url_for('MaintenanceRequests'))
+
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+
         if new_status == 'Resolved':
-            cursor.execute('UPDATE MAINTENANCE_REQUEST SET STATUS = % s, DATE_RESOLVED = % s WHERE REQUEST_ID = % s', (new_status, date.today(), req_id))
+            cursor.execute(
+                'UPDATE maintenance_request SET STATUS = %s, DATE_RESOLVED = %s WHERE REQUEST_ID = %s',
+                (new_status, date.today(), req_id)
+            )
         else:
-            cursor.execute('UPDATE MAINTENANCE_REQUEST SET STATUS = % s, DATE_RESOLVED = NULL WHERE REQUEST_ID = % s', (new_status, req_id))
+            cursor.execute(
+                'UPDATE maintenance_request SET STATUS = %s, DATE_RESOLVED = NULL WHERE REQUEST_ID = %s',
+                (new_status, req_id)
+            )
+
         mysql.connection.commit()
+
     return redirect(url_for('MaintenanceRequests'))
+
 
 @app.route('/RentApartment')
 def rentApartment() :
