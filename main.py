@@ -24,20 +24,24 @@ app = Flask(__name__)
 # app.secret_key = 'your secret key'
 app.secret_key = "apartment_rental"
 
-#code for connection
+
+# Code for connection
 @app.template_filter('securename')
 def securename(value):
     return secure_filename(value or '')
-app.config['MYSQL_HOST'] = 'localhost' #hostname
-app.config['MYSQL_USER'] = 'apartweb' #username
-app.config['MYSQL_PASSWORD'] = 'mynewpass123' #password
-#in my case password is null so i am keeping empty
-app.config['MYSQL_DB'] = 'apartmentRental_v2' #database name
-# Intialize MySQL
+
+app.config['MYSQL_HOST'] = os.environ.get('MYSQL_HOST')
+app.config['MYSQL_USER'] = os.environ.get('MYSQL_USER')
+app.config['MYSQL_PASSWORD'] = os.environ.get('MYSQL_PASSWORD')
+app.config['MYSQL_DB'] = os.environ.get('MYSQL_DB')
+app.config['MYSQL_PORT'] = int(os.environ.get('MYSQL_PORT', '15644'))
+
+# Initialize MySQL
 class SimpleMySQL:
     def __init__(self, app):
         self.app = app
         self._connection = None
+
     @property
     def connection(self):
         if self._connection is None or not self._connection.open:
@@ -45,10 +49,14 @@ class SimpleMySQL:
                 host=self.app.config['MYSQL_HOST'],
                 user=self.app.config['MYSQL_USER'],
                 password=self.app.config['MYSQL_PASSWORD'],
-                database=self.app.config['MYSQL_DB']
+                database=self.app.config['MYSQL_DB'],
+                port=self.app.config['MYSQL_PORT'],
+                ssl={}
             )
         return self._connection
+
 mysql = SimpleMySQL(app)
+
 
 mysql = SimpleMySQL(app)
 @app.route('/')
