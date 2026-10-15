@@ -183,11 +183,15 @@ def AdminDashboard() :
     mysql.connection.commit()
     result2=cursor.fetchone()
     t_tenants = result2['T_TENANTS'] 
-    cursor.execute('SELECT COUNT(ROOM_NO) AS T_APTS FROM APARTMENT WHERE APT_STATUS = "Occupied"')
+    
+    cursor.execute('SELECT COUNT(ROOM_NO) AS T_APTS FROM APARTMENT WHERE APT_STATUS = %s', ('Occupied',))
     mysql.connection.commit()
-    result3=cursor.fetchone()
-    occ_apts = result3['T_APTS'] 
-    cursor.execute('SELECT COUNT(ROOM_NO) AS T_APTS FROM APARTMENT WHERE APT_STATUS = "Unoccupied"')
+    result3 = cursor.fetchone()
+    occ_apts = result3['T_APTS']
+
+    cursor.execute('SELECT COUNT(ROOM_NO) AS T_APTS FROM APARTMENT WHERE APT_STATUS = %s', ('Unoccupied',))
+    mysql.connection.commit()
+
     mysql.connection.commit()
     result4=cursor.fetchone()
     unocc_apts = result4['T_APTS']  
@@ -324,7 +328,7 @@ def ApartmentRooms() :
             msg2 = 'You have successfully added an Apartment !'
     elif request.method == 'POST':
         msg2 = 'Please fill out the form !'
-    cursor.execute('SELECT APT_TITLE, A.ROOM_NO, A.BLOCK_NO, A.FLOOR_NO, A.BEDROOM_TYPE, AREA, RENT_PER_MONTH, APARTMENT_DESC FROM APARTMENT AS A, APARTMENT_DETAILS AS AD WHERE A.ROOM_NO = AD.ROOM_NO AND A.APT_STATUS = "Unoccupied"')
+    cursor.execute('SELECT APT_TITLE, A.ROOM_NO, A.BLOCK_NO, A.FLOOR_NO, A.BEDROOM_TYPE, AREA, RENT_PER_MONTH, APARTMENT_DESC FROM APARTMENT AS A, APARTMENT_DETAILS AS AD WHERE A.ROOM_NO = AD.ROOM_NO AND A.APT_STATUS = %s', ('Unoccupied',))
     mysql.connection.commit()
     msg3=cursor.fetchall()
     cursor.execute('SELECT * FROM APARTMENT_PHOTOS')
@@ -369,7 +373,7 @@ def UpdateApartment():
             msg2 = 'Apartment doesn\'t exists !'
     elif request.method == 'POST':
         msg2 = 'Please fill out the form !'
-    cursor.execute('SELECT APT_TITLE, A.ROOM_NO, A.BLOCK_NO, A.FLOOR_NO, A.BEDROOM_TYPE, AREA, RENT_PER_MONTH, APARTMENT_DESC FROM APARTMENT AS A, APARTMENT_DETAILS AS AD WHERE A.ROOM_NO = AD.ROOM_NO AND A.APT_STATUS = "Unoccupied"')
+    cursor.execute('SELECT APT_TITLE, A.ROOM_NO, A.BLOCK_NO, A.FLOOR_NO, A.BEDROOM_TYPE, AREA, RENT_PER_MONTH, APARTMENT_DESC FROM APARTMENT AS A, APARTMENT_DETAILS AS AD WHERE A.ROOM_NO = AD.ROOM_NO AND A.APT_STATUS = %s', ('Unoccupied',))
     mysql.connection.commit()
     msg3=cursor.fetchall() 
     cursor.execute('SELECT * FROM APARTMENT_PHOTOS')
@@ -405,7 +409,7 @@ def DeleteApartment() :
             msg2 = 'Apartment doesn\'t exists !'
     elif request.method == 'POST':
         msg2 = 'Please fill out the form !'
-    cursor.execute('SELECT APT_TITLE, A.ROOM_NO, A.BLOCK_NO, A.FLOOR_NO, A.BEDROOM_TYPE, AREA, RENT_PER_MONTH, APARTMENT_DESC FROM APARTMENT AS A, APARTMENT_DETAILS AS AD WHERE A.ROOM_NO = AD.ROOM_NO AND A.APT_STATUS = "Unoccupied"')
+    cursor.execute('SELECT APT_TITLE, A.ROOM_NO, A.BLOCK_NO, A.FLOOR_NO, A.BEDROOM_TYPE, AREA, RENT_PER_MONTH, APARTMENT_DESC FROM APARTMENT AS A, APARTMENT_DETAILS AS AD WHERE A.ROOM_NO = AD.ROOM_NO AND A.APT_STATUS = %s', ('Unoccupied',))
     mysql.connection.commit()
     msg3=cursor.fetchall() 
     cursor.execute('SELECT * FROM APARTMENT_PHOTOS')
@@ -545,7 +549,7 @@ def rentApartment() :
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     query = ('SELECT APT_TITLE, A.ROOM_NO, A.BLOCK_NO, A.FLOOR_NO, A.BEDROOM_TYPE, AREA, RENT_PER_MONTH, APARTMENT_DESC '
              'FROM APARTMENT AS A, APARTMENT_DETAILS AS AD '
-             'WHERE A.ROOM_NO = AD.ROOM_NO AND A.APT_STATUS = "Unoccupied"')
+            'WHERE A.ROOM_NO = AD.ROOM_NO AND A.APT_STATUS = %s', ('Unoccupied',))
     params = []
     if block_filter:
         query += ' AND A.BLOCK_NO = % s'
@@ -592,7 +596,9 @@ def Details() :
         mysql.connection.commit()
         tid_list1 = cursor.fetchone()
         t_id = tid_list1['T_ID']
-        cursor.execute('SELECT RENT_PER_MONTH FROM APARTMENT WHERE ROOM_NO = %s AND APT_STATUS = "Unoccupied"',(aptNo,))
+       
+        cursor.execute('SELECT RENT_PER_MONTH FROM APARTMENT WHERE ROOM_NO = %s AND APT_STATUS = %s', (aptNo, 'Unoccupied'))
+
         mysql.connection.commit()
         res1 = cursor.fetchone()
         if t_id != None and res1 != None :
