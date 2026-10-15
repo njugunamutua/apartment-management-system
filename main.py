@@ -622,8 +622,7 @@ def Details() :
             Error = 'Invalid Username or Apartment No.!!'
     elif request.method == 'POST' :
         Error= 'Please fill out the form!'
-    return render_template('Details.html', Error=Error)
-
+   return render_template('details.html', Error=Error)
 
 
 @app.route('/alreadyTenant', methods=['GET','POST'])
