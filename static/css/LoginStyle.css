@@ -133,23 +133,29 @@ body {
 	border-color: var(--orange);
 }
 
+
 .loginbox input[type="submit"] {
-	width: 100%;
-	margin-top: 26px;
-	padding: 13px 0;
-	background: var(--orange);
-	color: #fff;
-	font-size: 15px;
-	font-weight: 700;
-	border-radius: 10px;
-	cursor: pointer;
-	box-shadow: 0 6px 16px rgba(255, 107, 53, 0.35);
-	transition: background 0.2s;
+    display: block;
+    width: 100%;
+    margin-top: 26px;
+    padding: 13px 0;
+    background: var(--orange);
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 0 6px 16px rgba(255, 107, 53, 0.35);
+    transition: background 0.2s;
+    -webkit-appearance: none;
+    appearance: none;
 }
 
 .loginbox input[type="submit"]:hover {
-	background: var(--orange-dark);
+    background: var(--orange-dark);
 }
+
 
 .loginbox ul {
 	list-style: none;

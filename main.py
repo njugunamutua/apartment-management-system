@@ -64,19 +64,24 @@ def home() :
     return render_template('welcome.html')
     
     
+
 @app.route('/AdminLogin', methods=['GET', 'POST'])
-def AdminLogin() :
+def AdminLogin():
     error = None
-    if request.method == 'POST' and 'adminUsername' in request.form and 'adminPass' in request.form and 'securityPass' in request.form:
-        if request.form['adminUsername'] != 'admin' or \
-                request.form['adminPass'] != 'secret@123' or \
-                request.form['securityPass'] != 'apartment':
+
+    if request.method == 'POST':
+        username = request.form.get('adminUsername', '')
+        password = request.form.get('adminPass', '')
+        security = request.form.get('securityPass', '')
+
+        if (username == 'admin'
+                and password == 'secret@123'
+                and security == 'apartment'):
+            session['admin_loggedin'] = True
+            flash('You have logged in successfully!')
+            return redirect(url_for('AdminDashboard'))
+        else:
             error = 'Invalid credentials'
-        
-    else:
-     session['admin_loggedin'] = True
-    flash('You have logged in successfully!')
-    return redirect(url_for('AdminDashboard'))
 
     return render_template('AdminLogin.html', error=error)
 
