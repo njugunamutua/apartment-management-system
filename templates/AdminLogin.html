@@ -7,25 +7,20 @@
 	    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 	    <link rel="stylesheet" type="text/css" href="{{url_for('static',filename='css/AdminLoginStyle.css')}}">
 		<script>
-			$(function () {
-				$("#txtName").keypress(function (e) {
-					var keyCode = e.keyCode || e.which;
-	 
-					$("#lblError").html("");
-	 
-					//Regex for Valid Characters i.e. Alphabets and Numbers.
-					var regex = /^[A-Za-z -']+$/;
-	 
-					//Validate TextBox value against the Regex.
-					var isValid = regex.test(String.fromCharCode(keyCode));
-					if (!isValid) {
-						$("#lblError").html("Only Alphabets and allowed.");
-					}
-	 
-					return isValid;
-				});
-			});
-		</script>
+document.addEventListener('DOMContentLoaded', function () {
+    const username = document.getElementById('txtName');
+
+    if (username) {
+        username.addEventListener('keypress', function (e) {
+            const regex = /^[A-Za-z0-9 _-]+$/;
+
+            if (!regex.test(e.key) && e.key.length === 1) {
+                e.preventDefault();
+            }
+        });
+    }
+});
+</script>
 	</head>
 	<body>
 		{% if error %}  
